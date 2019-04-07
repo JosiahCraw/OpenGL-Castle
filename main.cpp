@@ -42,9 +42,10 @@ void display(void) {
 	xlook = -100.0*sin(lookAngle*cdr);
 	zlook = -100.0*cos(lookAngle*cdr);
 	gluLookAt (0, 500, 0, xlook, 500, zlook, 0, 1, 0);  //camera rotation
-
-	//skybox(texId);
-	loadObjFromFile("cfg/skybox.cfg", texId);
+	
+	//loadObjFromFile("cfg/skybox.cfg", texId);
+	
+	loadObjFromFile("cfg/castle.cfg", texId);
 	glFlush();
 }
 
