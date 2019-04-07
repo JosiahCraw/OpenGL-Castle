@@ -15,7 +15,7 @@ void loadObjFromFile(string file, GLuint texId[]) {
 	glEnable(GL_TEXTURE_2D);
 	int objectType = 0;
 	while (1) {
-		int x, y, z, texNum, baseRad, topRad, height, slices, stacks;
+		int x, y, z, texNum, baseRad, topRad, height, slices, stacks, texEnvi;
 		float s, e;
 		bool textured;
 		getline(objFile, objInfo);
@@ -31,6 +31,11 @@ void loadObjFromFile(string file, GLuint texId[]) {
 			objInfo.erase(0, objInfo.find(delim) + 1);
 			texNum = stoi(objInfo.substr(0, objInfo.find(delim)));
 			glBindTexture(GL_TEXTURE_2D, texId[texNum]);
+			objInfo.erase(0, objInfo.find(delim) + 1);
+			texEnvi = stoi(objInfo.substr(0, objInfo.find(delim)));
+			if (texEnvi == 1) {
+				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+			}
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "CYLINDER") {
 			objectType = CYLINDER;
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "CONE") {
@@ -42,24 +47,48 @@ void loadObjFromFile(string file, GLuint texId[]) {
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "SCALE") {
 			float a, b, c;
 			objInfo.erase(0, objInfo.find(delim) + 1);
-			a = stoi(objInfo.substr(0, objInfo.find(delim)));
+			a = stof(objInfo.substr(0, objInfo.find(delim)));
 			objInfo.erase(0, objInfo.find(delim) + 1);
-			b = stoi(objInfo.substr(0, objInfo.find(delim)));
+			b = stof(objInfo.substr(0, objInfo.find(delim)));
 			objInfo.erase(0, objInfo.find(delim) + 1);
-			c = stoi(objInfo.substr(0, objInfo.find(delim)));
+			c = stof(objInfo.substr(0, objInfo.find(delim)));
 			
 			glScalef(a, b, c);
 			
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "TRANSLATE") {
 			float a, b, c;
 			objInfo.erase(0, objInfo.find(delim) + 1);
-			a = stoi(objInfo.substr(0, objInfo.find(delim)));
+			a = stof(objInfo.substr(0, objInfo.find(delim)));
 			objInfo.erase(0, objInfo.find(delim) + 1);
-			b = stoi(objInfo.substr(0, objInfo.find(delim)));
+			b = stof(objInfo.substr(0, objInfo.find(delim)));
 			objInfo.erase(0, objInfo.find(delim) + 1);
-			c = stoi(objInfo.substr(0, objInfo.find(delim)));
+			c = stof(objInfo.substr(0, objInfo.find(delim)));
 			
 			glTranslatef(a, b, c);
+			
+		} else if (objInfo.substr(0, objInfo.find(delim)) == "ROTATE") {
+			float angle, x, y, z;
+			objInfo.erase(0, objInfo.find(delim) + 1);
+			x = stof(objInfo.substr(0, objInfo.find(delim)));
+			objInfo.erase(0, objInfo.find(delim) + 1);
+			y = stof(objInfo.substr(0, objInfo.find(delim)));
+			objInfo.erase(0, objInfo.find(delim) + 1);
+			z = stof(objInfo.substr(0, objInfo.find(delim)));
+			objInfo.erase(0, objInfo.find(delim) + 1);
+			angle = stof(objInfo.substr(0, objInfo.find(delim)));
+			
+			glRotatef(angle, x, y, z);
+			
+		} else if (objInfo.substr(0, objInfo.find(delim)) == "COLOUR") {
+			float r, g, b;
+			objInfo.erase(0, objInfo.find(delim) + 1);
+			r = stof(objInfo.substr(0, objInfo.find(delim)));
+			objInfo.erase(0, objInfo.find(delim) + 1);
+			g = stof(objInfo.substr(0, objInfo.find(delim)));
+			objInfo.erase(0, objInfo.find(delim) + 1);
+			b = stof(objInfo.substr(0, objInfo.find(delim)));
+			
+			glColor3f(r, g, b);
 			
 		} else {
 			switch (objectType) {
