@@ -19,10 +19,14 @@ void loadObjFromFile(string file, GLuint texId[]) {
 		float s, e;
 		bool textured;
 		getline(objFile, objInfo);
+		cout << objInfo;
+		cout << '\n';
 		if (objInfo.substr(0, objInfo.find(delim)) == "QUADS") {
 			glBegin(GL_QUADS);
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "END") {
 			glEnd();
+			textured = false;
+		} else if (objInfo.substr(0, objInfo.find(delim)) == "ENDTEX") {
 			textured = false;
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "FILEEND") {
 			break;
@@ -67,13 +71,14 @@ void loadObjFromFile(string file, GLuint texId[]) {
 			glTranslatef(a, b, c);
 			
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "ROTATE") {
-			float angle, x, y, z;
+			float angle;
+			int x, y, z;
 			objInfo.erase(0, objInfo.find(delim) + 1);
-			x = stof(objInfo.substr(0, objInfo.find(delim)));
+			x = stoi(objInfo.substr(0, objInfo.find(delim)));
 			objInfo.erase(0, objInfo.find(delim) + 1);
-			y = stof(objInfo.substr(0, objInfo.find(delim)));
+			y = stoi(objInfo.substr(0, objInfo.find(delim)));
 			objInfo.erase(0, objInfo.find(delim) + 1);
-			z = stof(objInfo.substr(0, objInfo.find(delim)));
+			z = stoi(objInfo.substr(0, objInfo.find(delim)));
 			objInfo.erase(0, objInfo.find(delim) + 1);
 			angle = stof(objInfo.substr(0, objInfo.find(delim)));
 			

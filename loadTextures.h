@@ -63,6 +63,8 @@ void loadTextures(GLuint texId[])
 	int num = numOfTex();
 	for (int i=0; i<num; i++) {
 		glBindTexture(GL_TEXTURE_2D, texId[i]);
+		cout << textures[i].name;
+		cout << '\n';
 		if (textures[i].type == 0) {
 			loadTGA(textures[i].name);
 		} else {
