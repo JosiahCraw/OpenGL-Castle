@@ -42,6 +42,8 @@ void loadObjFromFile(string file, GLuint texId[]) {
 			}
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "CYLINDER") {
 			objectType = CYLINDER;
+		} else if (objInfo.substr(0, objInfo.find(delim)) == "SPHERE") {
+			objectType = CYLINDER;
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "CONE") {
 			objectType = CONE;
 		} else if (objInfo.substr(0, objInfo.find(delim)) == "PUSH") {
