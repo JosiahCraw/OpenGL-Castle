@@ -6,14 +6,16 @@
 using namespace std;
 
 enum OBJECTS {QUADS=0, CYLINDER, CONE, SPHERE, RECTANGLE};
+const char* DELIM = ",";
 
-
-void texture(string objInfo) {
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	texNum = stoi(objInfo.substr(0, objInfo.find(delim)));
+void texture(string objInfo, GLuint texId[]) {
+	int texNum, texEnvi;
+	
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	texNum = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 	glBindTexture(GL_TEXTURE_2D, texId[texNum]);
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	texEnvi = stoi(objInfo.substr(0, objInfo.find(delim)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	texEnvi = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 	if (texEnvi == 1) {
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	} else if (texEnvi == 2) {
@@ -25,12 +27,12 @@ void texture(string objInfo) {
 
 void scale(string objInfo) {
 	float a, b, c;
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	a = stof(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	b = stof(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	c = stof(objInfo.substr(0, objInfo.find(delim)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	a = stof(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	b = stof(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	c = stof(objInfo.substr(0, objInfo.find(DELIM)));
 	
 	glScalef(a, b, c);
 }
@@ -38,12 +40,12 @@ void scale(string objInfo) {
 
 void translate(string objInfo) {
 	float a, b, c;
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	a = stof(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	b = stof(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	c = stof(objInfo.substr(0, objInfo.find(delim)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	a = stof(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	b = stof(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	c = stof(objInfo.substr(0, objInfo.find(DELIM)));
 	
 	glTranslatef(a, b, c);
 }
@@ -51,43 +53,46 @@ void translate(string objInfo) {
 void rotate(string objInfo) {
 	float angle;
 	int x, y, z;
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	x = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	y = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	z = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	angle = stof(objInfo.substr(0, objInfo.find(delim)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	x = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	y = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	z = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	angle = stof(objInfo.substr(0, objInfo.find(DELIM)));
 	
 	glRotatef(angle, x, y, z);
 }
 
 void colour(string objInfo) {
 	float r, g, b;
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	r = stof(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	g = stof(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	b = stof(objInfo.substr(0, objInfo.find(delim)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	r = stof(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	g = stof(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	b = stof(objInfo.substr(0, objInfo.find(DELIM)));
 	
 	glColor3f(r, g, b);
 }
 
-void quads(string objInfo, bool textured) {
-	x = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	y = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	z = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
+void quads(string objInfo, bool textured, GLuint texId[]) {
+	int x, y, z;
+	float s, e;
+	
+	x = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	y = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	z = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	
 	if (textured) {
-		s = stof(objInfo.substr(0, objInfo.find(delim)));
-		objInfo.erase(0, objInfo.find(delim) + 1);
-		e = stof(objInfo.substr(0, objInfo.find(delim)));
-		objInfo.erase(0, objInfo.find(delim) + 1);
+		s = stof(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		e = stof(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
 		glTexCoord2f(s, e);
 	}
 	
@@ -95,16 +100,18 @@ void quads(string objInfo, bool textured) {
 }
 
 void cylinder(string objInfo) {
-	baseRad = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	topRad = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	height = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	slices = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	stacks = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
+	int baseRad, topRad, height, slices, stacks;
+	
+	baseRad = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	topRad = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	height = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	slices = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	stacks = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	
 	GLUquadric *quad;
 	quad = gluNewQuadric();
@@ -114,36 +121,42 @@ void cylinder(string objInfo) {
 }
 
 void cone(string objInfo) {
-	baseRad = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	height = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	slices = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	stacks = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
+	int baseRad, height, slices, stacks;
+	
+	baseRad = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	height = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	slices = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	stacks = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	
 	glutSolidCone(baseRad, height, slices, stacks);
 }
 
 void sphere(string objInfo) {
-	radius = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	slices = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	stacks = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
+	int radius, slices, stacks;
+	
+	radius = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	slices = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	stacks = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	
 	glutSolidSphere(radius, slices, stacks);					
 }
 
-void rectangle(string objInfo, bool textured) {
-	width = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	height = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
-	depth = stoi(objInfo.substr(0, objInfo.find(delim)));
-	objInfo.erase(0, objInfo.find(delim) + 1);
+void rectangle(string objInfo, bool textured, GLuint texId[]) {
+	int width, height, depth;
+	
+	width = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	height = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	depth = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	
 	int corners[8][3] = {
 		{0,0,0},
@@ -193,53 +206,50 @@ void rectangle(string objInfo, bool textured) {
 void loadObjFromFile(string file, GLuint texId[]) {
 	string objInfo;
 	ifstream objFile;
-	const char* delim = ",";
 	objFile.open(file);
 	glEnable(GL_TEXTURE_2D);
 	int objectType = 0;
 	while (1) {
-		int x, y, z, texNum, baseRad, topRad, height, slices, stacks, texEnvi, radius, width, depth;
-		float s, e;
 		bool textured;
 		getline(objFile, objInfo);
 		cout << objInfo;
 		cout << '\n';
-		if (objInfo.substr(0, objInfo.find(delim)) == "QUADS") {
+		if (objInfo.substr(0, objInfo.find(DELIM)) == "QUADS") {
 			glBegin(GL_QUADS);
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "END") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "END") {
 			glEnd();
 			textured = false;
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "ENDTEX") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "ENDTEX") {
 			textured = false;
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "FILEEND") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "FILEEND") {
 			break;
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "TEXTURE") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "TEXTURE") {
 			textured = true;
-			texture(objInfo);
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "CYLINDER") {
+			texture(objInfo, texId);
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "CYLINDER") {
 			objectType = CYLINDER;
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "SPHERE") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "SPHERE") {
 			objectType = SPHERE;
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "CONE") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "CONE") {
 			objectType = CONE;
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "RECTANGLE") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "RECTANGLE") {
 			objectType = RECTANGLE;
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "PUSH") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "PUSH") {
 			glPushMatrix();
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "POP") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "POP") {
 			glPopMatrix();
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "SCALE") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "SCALE") {
 			scale(objInfo);			
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "TRANSLATE") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "TRANSLATE") {
 			translate(objInfo);			
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "ROTATE") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "ROTATE") {
 			rotate(objInfo);			
-		} else if (objInfo.substr(0, objInfo.find(delim)) == "COLOUR") {
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "COLOUR") {
 			colour(objInfo);			
 		} else {
 			switch (objectType) {
 				case (QUADS):
-					quads(objInfo, textured);
+					quads(objInfo, textured, texId);
 					break;
 				case (CYLINDER):
 					cylinder(objInfo);
@@ -251,7 +261,7 @@ void loadObjFromFile(string file, GLuint texId[]) {
 					sphere(objInfo);
 					break;
 				case (RECTANGLE):					
-					rectangle(objInfo, textured);					
+					rectangle(objInfo, textured, texId);					
 					break;				
 			}
 		}
