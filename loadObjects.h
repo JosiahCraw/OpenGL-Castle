@@ -111,6 +111,7 @@ void loadObjFromFile(string file, GLuint texId[]) {
 					objInfo.erase(0, objInfo.find(delim) + 1);
 					z = stoi(objInfo.substr(0, objInfo.find(delim)));
 					objInfo.erase(0, objInfo.find(delim) + 1);
+					
 					if (textured) {
 						s = stof(objInfo.substr(0, objInfo.find(delim)));
 						objInfo.erase(0, objInfo.find(delim) + 1);
@@ -118,7 +119,9 @@ void loadObjFromFile(string file, GLuint texId[]) {
 						objInfo.erase(0, objInfo.find(delim) + 1);
 						glTexCoord2f(s, e);
 					}
-					glVertex3f(x,  y, z);
+					
+					glVertex3f(x, y, z);
+					
 					break;
 				case (CYLINDER):
 					baseRad = stoi(objInfo.substr(0, objInfo.find(delim)));
@@ -149,6 +152,7 @@ void loadObjFromFile(string file, GLuint texId[]) {
 					objInfo.erase(0, objInfo.find(delim) + 1);
 					
 					glutSolidCone(baseRad, height, slices, stacks);
+					
 					break;
 				case (SPHERE):
 					radius = stoi(objInfo.substr(0, objInfo.find(delim)));
@@ -159,14 +163,9 @@ void loadObjFromFile(string file, GLuint texId[]) {
 					objInfo.erase(0, objInfo.find(delim) + 1);
 					
 					glutSolidSphere(radius, slices, stacks);
-				case (RECTANGLE):
-					x = stoi(objInfo.substr(0, objInfo.find(delim)));
-					objInfo.erase(0, objInfo.find(delim) + 1);
-					y = stoi(objInfo.substr(0, objInfo.find(delim)));
-					objInfo.erase(0, objInfo.find(delim) + 1);
-					z = stoi(objInfo.substr(0, objInfo.find(delim)));
-					objInfo.erase(0, objInfo.find(delim) + 1);
 					
+					break;
+				case (RECTANGLE):					
 					width = stoi(objInfo.substr(0, objInfo.find(delim)));
 					objInfo.erase(0, objInfo.find(delim) + 1);
 					height = stoi(objInfo.substr(0, objInfo.find(delim)));
@@ -174,71 +173,47 @@ void loadObjFromFile(string file, GLuint texId[]) {
 					depth = stoi(objInfo.substr(0, objInfo.find(delim)));
 					objInfo.erase(0, objInfo.find(delim) + 1);
 					
-					glBegin(QUADS);
-					glTexCoord2f(0.0, 0.0);
-					glVertex3f(x, y, z);
-					glTexCoord2f(1.0, 0.0);
-					glVertex3f(x+width, y, z);
-					glTexCoord2f(1.0, 1.0);
-					glVertex3f(x+width, y+height, z);
-					glTexCoord2f(0.0, 1.0);
-					glVertex3f(x, y+height, z);
-					glEnd();
+					int corners[8][3] = {
+						{0,0,0},
+						{width,0,0},
+						{width,height,0},
+						{0,height,0},
+						{0,0,depth},
+						{width,0,depth},
+						{width,height,depth},
+						{0,height,depth}
+					};
 					
-					glBegin(QUADS);
-					glTexCoord2f(0.0, 0.0);
-					glVertex3f(x, y, z+depth);
-					glTexCoord2f(1.0, 0.0);
-					glVertex3f(x+width, y, z+depth);
-					glTexCoord2f(1.0, 1.0);
-					glVertex3f(x+width, y+height, z+depth);
-					glTexCoord2f(0.0, 1.0);
-					glVertex3f(x, y+height, z+depth);
-					glEnd();
-					
-					glBegin(QUADS);
-					glTexCoord2f(0.0, 0.0);
-					glVertex3f(x+width, y, z+depth);
-					glTexCoord2f(1.0, 0.0);
-					glVertex3f(x+width, y, z);
-					glTexCoord2f(1.0, 1.0);
-					glVertex3f(x, y, z);
-					glTexCoord2f(0.0, 1.0);
-					glVertex3f(x, y+height, z+depth);
-					glEnd();
-					
-					glBegin(QUADS);
-					glTexCoord2f(0.0, 0.0);
-					glVertex3f(x+width, y, z);
-					glTexCoord2f(1.0, 0.0);
-					glVertex3f(x+width, y, z+depth);
-					glTexCoord2f(1.0, 1.0);
-					glVertex3f(x+width, y+height, z+depth);
-					glTexCoord2f(0.0, 1.0);
-					glVertex3f(x+width, y+height, z);
-					glEnd();
-					
-					glBegin(QUADS);
-					glTexCoord2f(1.0, 1.0);
-					glVertex3f(x+width, y+height, z);
-					glTexCoord2f(1.0, 0.0);
-					glVertex3f(x+width, y+height, z+depth);
-					glTexCoord2f(1.0, 1.0);
-					glVertex3f(x, y+height, z+depth);
-					glTexCoord2f(0.0, 1.0);
-					glVertex3f(x, y+height, z);
-					glEnd();
-					
-					glBegin(QUADS);
-					glTexCoord2f(0.0, 0.0);
-					glVertex3f(x+width, y, z+depth);
-					glTexCoord2f(1.0, 0.0);
-					glVertex3f(x, y, z+depth);
-					glTexCoord2f(1.0, 1.0);
-					glVertex3f(x, y+height, z+depth);
-					glTexCoord2f(0.0, 1.0);
-					glVertex3f(x+depth, y+height, z+depth);
-					glEnd();
+					int faces[6][4] = {
+						{0,1,2,3},
+						{4,0,3,7},
+						{1,5,6,2},
+						{3,2,6,7},
+						{4,5,1,0},
+						{5,4,7,6}
+					};
+						
+					int textures[4][2] = {
+						{0,0},
+						{1,0},
+						{1,1},
+						{0,0}
+					};
+						
+					for (int i=0; i<6;i++) {
+						glBegin(GL_QUADS);
+						for (int j=0; j<4; j++) {
+							int points[3] = {corners[faces[i][j]][0],
+								corners[faces[i][j]][1], 
+								corners[faces[i][j]][2]};
+							if (textured) {
+								glTexCoord2f(textures[j][0], textures[j][1]);
+							}
+							glVertex3f(points[0], points[1], points[2]);
+						}
+						textured = false;
+						glEnd();
+					}
 					
 					break;				
 			}
