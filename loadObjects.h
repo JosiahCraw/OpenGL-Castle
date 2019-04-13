@@ -7,9 +7,9 @@ using namespace std;
 
 enum OBJECTS {QUADS=0, CYLINDER, CONE, SPHERE, RECTANGLE};
 const char* DELIM = ",";
-int texNum, texEnvi;
 
 void texture(string objInfo, GLuint texId[]) {
+	int texNum, texEnvi;
 	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	texNum = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 	glBindTexture(GL_TEXTURE_2D, texId[texNum]);
@@ -60,7 +60,9 @@ void rotate(string objInfo) {
 	z = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	angle = stof(objInfo.substr(0, objInfo.find(DELIM)));
-	
+	cout << objInfo;
+	cout << '\n';
+	cout << angle;
 	glRotatef(angle, x, y, z);
 }
 
@@ -200,8 +202,7 @@ void rectangle(string objInfo, bool textured, GLuint texId[]) {
 	}
 		
 	for (int i=0; i<6;i++) {
-		
-		texture("1,")
+		glBindTexture(GL_TEXTURE_2D, texId[8]);
 		glBegin(GL_QUADS);
 		for (int j=0; j<4; j++) {
 			int points[3] = {corners[faces[i][j]][0],

@@ -57,7 +57,7 @@ void display(void) {
 	
 	//look_x = -100.0*sin(lookAngle*cdr);
     //look_z = -100.0*cos(lookAngle*cdr);
-	gluLookAt(eye_x, 300, eye_z, look_x, 300, look_z,   0, 1, 0);
+	gluLookAt(eye_x, 500, eye_z, look_x, 500, look_z,   0, 1, 0);
 	
 	glLightfv(GL_LIGHT0, GL_POSITION, lgt_pos);
 	glDisable(GL_LIGHTING);
