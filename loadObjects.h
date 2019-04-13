@@ -7,10 +7,9 @@ using namespace std;
 
 enum OBJECTS {QUADS=0, CYLINDER, CONE, SPHERE, RECTANGLE};
 const char* DELIM = ",";
+int texNum, texEnvi;
 
 void texture(string objInfo, GLuint texId[]) {
-	int texNum, texEnvi;
-	
 	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	texNum = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 	glBindTexture(GL_TEXTURE_2D, texId[texNum]);
@@ -150,6 +149,7 @@ void sphere(string objInfo) {
 
 void rectangle(string objInfo, bool textured, GLuint texId[]) {
 	int width, height, depth;
+	int mainFaceTiles[2] = {};
 	
 	width = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 	objInfo.erase(0, objInfo.find(DELIM) + 1);
@@ -157,6 +157,13 @@ void rectangle(string objInfo, bool textured, GLuint texId[]) {
 	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	depth = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	
+	if (textured) {
+		mainFaceTiles[0] = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		mainFaceTiles[1] = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+	}
 	
 	int corners[8][3] = {
 		{0,0,0},
@@ -182,10 +189,19 @@ void rectangle(string objInfo, bool textured, GLuint texId[]) {
 		{0,0},
 		{1,0},
 		{1,1},
-		{0,0}
+		{0,1}
 	};
+	
+	if (textured) {
+		textures[1][0] = mainFaceTiles[0];
+		textures[2][0] = mainFaceTiles[0];
+		textures[2][1] = mainFaceTiles[1];
+		textures[3][1] = mainFaceTiles[1];
+	}
 		
 	for (int i=0; i<6;i++) {
+		
+		texture("1,")
 		glBegin(GL_QUADS);
 		for (int j=0; j<4; j++) {
 			int points[3] = {corners[faces[i][j]][0],
