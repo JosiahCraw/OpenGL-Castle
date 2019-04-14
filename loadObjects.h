@@ -202,7 +202,7 @@ void rectangle(string objInfo, bool textured, GLuint texId[]) {
 	}
 		
 	for (int i=0; i<6;i++) {
-		glBindTexture(GL_TEXTURE_2D, texId[8]);
+		//glBindTexture(GL_TEXTURE_2D, texId[8]);
 		glBegin(GL_QUADS);
 		for (int j=0; j<4; j++) {
 			int points[3] = {corners[faces[i][j]][0],
