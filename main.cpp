@@ -45,6 +45,8 @@ void initialise(void) {
 
 
 void display(void) {
+	float white[4]  = {1.0, 1.0, 1.0, 1.0};
+	
 	//float cdr=3.14159265/180.0;
 	float lgt_pos[] = {0.0f, 1000, 0.0f, 1.0f};
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -62,12 +64,19 @@ void display(void) {
 	glLightfv(GL_LIGHT0, GL_POSITION, lgt_pos);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
+	
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	
 	//glClearColor (0.2f, 0.2f, 0.2f, 1.0f);
 	//loadObjFromFile("cfg/skybox.cfg", texId);
 	loadObjFromFile("cfg/ship.cfg", texId);
 	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-	loadObjFromFile("cfg/castle.cfg", texId);
+	//loadObjFromFile("cfg/castle.cfg", texId);
 	glFlush();
 }
 

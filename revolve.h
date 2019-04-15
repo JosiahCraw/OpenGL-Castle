@@ -63,6 +63,8 @@ void revolve(string file, bool textured, int num) {
 	
 	loadVertexes(file, vert);
 	
+	vert.print();
+	
 	for (int j=0;j<360;j++) {
 		glBegin(GL_TRIANGLE_STRIP);
 		for (int i=0;i<vert.num;i++) {
