@@ -1,11 +1,12 @@
 #include <GL/glut.h>
 #include "loadTGA.h"
 #include "loadBMP.h"
+#include "revolve.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
 
-enum OBJECTS {QUADS=0, CYLINDER, CONE, SPHERE, RECTANGLE};
+enum OBJECTS {QUADS=0, CYLINDER, CONE, SPHERE, RECTANGLE, REVOLVE};
 const char* DELIM = ",";
 
 void texture(string objInfo, GLuint texId[]) {
@@ -255,6 +256,7 @@ void loadObjFromFile(string file, GLuint texId[]) {
 			glPushMatrix();
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "POP") {
 			glPopMatrix();
+			glColor3f(0.0, 0.0, 0.0);
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "SCALE") {
 			scale(objInfo);			
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "TRANSLATE") {
