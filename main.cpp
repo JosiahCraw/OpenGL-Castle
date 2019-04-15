@@ -64,6 +64,7 @@ void display(void) {
 	glDisable(GL_LIGHT0);
 	//glClearColor (0.2f, 0.2f, 0.2f, 1.0f);
 	//loadObjFromFile("cfg/skybox.cfg", texId);
+	loadObjFromFile("cfg/ship.cfg", texId);
 	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 	loadObjFromFile("cfg/castle.cfg", texId);

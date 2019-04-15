@@ -219,6 +219,14 @@ void rectangle(string objInfo, bool textured, GLuint texId[]) {
 	}
 }
 
+void getRevolve(string objInfo, bool textured) {
+	string file = objInfo.substr(0, objInfo.find(DELIM));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	int num = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	
+	revolve(file, textured, num);
+}
 
 
 void loadObjFromFile(string file, GLuint texId[]) {
@@ -257,6 +265,7 @@ void loadObjFromFile(string file, GLuint texId[]) {
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "POP") {
 			glPopMatrix();
 			glColor3f(0.0, 0.0, 0.0);
+			textured = false;
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "SCALE") {
 			scale(objInfo);			
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "TRANSLATE") {
@@ -265,6 +274,9 @@ void loadObjFromFile(string file, GLuint texId[]) {
 			rotate(objInfo);			
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "COLOUR") {
 			colour(objInfo);			
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "REVOLVE") {
+			objInfo.erase(0, objInfo.find(DELIM) + 1);
+			getRevolve(objInfo, textured);			
 		} else {
 			switch (objectType) {
 				case (QUADS):
@@ -281,7 +293,7 @@ void loadObjFromFile(string file, GLuint texId[]) {
 					break;
 				case (RECTANGLE):					
 					rectangle(objInfo, textured, texId);					
-					break;				
+					break;
 			}
 		}
 	}
