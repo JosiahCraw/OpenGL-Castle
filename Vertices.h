@@ -30,21 +30,23 @@ void Vertices::setX(string xValues) {
 	cout << xValues;
 	cout << '\n';
 	for (int i=0;i<num;i++) {
-		Vertices::x[i] = stof(xValues.substr(0, xValues.find(delim)));
+		x[i] = stof(xValues.substr(0, xValues.find(delim)));
+		//cout << x[i];
 		xValues.erase(0, xValues.find(delim) + 1);
 	}
+	//cout << '\n';
 }
 
 void Vertices::setY(string yValues) {
 	for (int i=0;i<num;i++) {
-		Vertices::y[i] = stof(yValues.substr(0, yValues.find(delim)));
+		y[i] = stof(yValues.substr(0, yValues.find(delim)));
 		yValues.erase(0, yValues.find(delim) + 1);
 	}
 }
 
 void Vertices::setZ(string zValues) {
 	for (int i=0;i<num;i++) {
-		Vertices::z[i] = stof(zValues.substr(0, zValues.find(delim)));
+		z[i] = stof(zValues.substr(0, zValues.find(delim)));
 		zValues.erase(0, zValues.find(delim) + 1);
 	}
 }
@@ -58,12 +60,12 @@ void Vertices::print(void) {
 void Vertices::printValues(int value) {
 	for (int i=0;i<num;i++) {
 		if (value==0) {
-			cout << Vertices::x[i];
+			cout << x[i];
 		} else if (value==1) {
-			cout << Vertices::y[i];
+			cout << y[i];
 		} else if (value==2) {
-			cout << Vertices::z[i];
+			cout << z[i];
 		}
 	}
-	cout << '\n';
+	//cout << '\n';
 }

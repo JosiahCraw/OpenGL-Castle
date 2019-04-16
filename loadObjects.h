@@ -224,8 +224,10 @@ void getRevolve(string objInfo, bool textured) {
 	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	int num = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	int slices = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
 	
-	revolve(file, textured, num);
+	revolve(file, textured, num, slices);
 }
 
 
