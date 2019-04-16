@@ -13,12 +13,14 @@ using namespace std;
 float lookAngle = 0.0;		//Camera rotation
 int NUMTEX;
 GLuint texId[100];
-float angle=0, look_x, look_z=-1., eye_x, eye_z; 
+float look_x, look_z=-1., eye_x, eye_z; 
+bool pressed=false;
 
 
 void initialise(void) {
-	float black[4] = {0.0, 0.0, 0.0, 1.0};
+	//float black[4] = {0.0, 0.0, 0.0, 1.0};
     float white[4]  = {1.0, 1.0, 1.0, 1.0};
+    float grey[4] = {0.2, 0.2, 0.2, 1.0};
     
 	CompNumOfTex();
 	NUMTEX = numOfTex();
@@ -27,17 +29,22 @@ void initialise(void) {
     
     glClearColor (0., 0., 0., 0.);
     
-	glEnable(GL_DEPTH_TEST);
-    glEnable(GL_NORMALIZE);
-    
-	glLightfv(GL_LIGHT0, GL_AMBIENT, black);
+    glEnable(GL_DEPTH_TEST);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, grey);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
     glLightfv(GL_LIGHT0, GL_SPECULAR, white);
+	glEnable(GL_SMOOTH);
     
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_TEXTURE_2D);
-	
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glClearColor (1.0, 1.0, 1.0, 0.0);
+
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
     gluPerspective(80.0, 1.78, 100.0, 5000.0);
@@ -48,7 +55,7 @@ void display(void) {
 	float white[4]  = {1.0, 1.0, 1.0, 1.0};
 	
 	//float cdr=3.14159265/180.0;
-	float lgt_pos[] = {0.0f, 1000, 0.0f, 1.0f};
+	float lgt_pos[] = {1000.0f, 1000, 1000.0f, 1000.0f};
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	//glMatrixMode(GL_PROJECTION);
@@ -69,14 +76,14 @@ void display(void) {
 	glEnable(GL_COLOR_MATERIAL);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
 	//glClearColor (0.2f, 0.2f, 0.2f, 1.0f);
-	//loadObjFromFile("cfg/skybox.cfg", texId);
-	loadObjFromFile("cfg/ship.cfg", texId);
+	loadObjFromFile("cfg/skybox.cfg", texId, pressed);
+	loadObjFromFile("cfg/ship.cfg", texId, pressed);
 	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-	//loadObjFromFile("cfg/castle.cfg", texId);
+	loadObjFromFile("cfg/castle.cfg", texId, pressed);
 	glFlush();
 }
 
@@ -91,15 +98,30 @@ void display(void) {
         }
         else if(key == GLUT_KEY_UP)
         { //Move forward
-                eye_x += sin(lookAngle);
-                eye_z -= cos(lookAngle);
-        }
+			eye_x += sin(lookAngle);
+			eye_z -= cos(lookAngle);
+		}
 
         look_x = eye_x + 100*sin(lookAngle);
         look_z = eye_z - 100*cos(lookAngle);
         glutPostRedisplay();
 }
 
+void keyPresses(unsigned char key, int x, int y) {
+	if(key == 99) {
+		cout << "Pressed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1";
+		cout << '\n';
+		pressed = !pressed;
+	}
+}
+
+void timer(int value)
+{
+	cout << "test";
+	cout << '\n';
+	glutTimerFunc(50, timer, value);
+	glutPostRedisplay();
+}
 
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
@@ -111,6 +133,8 @@ int main(int argc, char** argv) {
 	initialise();
 	glutDisplayFunc(display); 
 	glutSpecialFunc(special);
+	glutKeyboardFunc(keyPresses);
+	glutTimerFunc(50, timer, 0);
 	
 	glutMainLoop();
 	return 0;

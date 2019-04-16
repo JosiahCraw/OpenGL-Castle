@@ -4,10 +4,13 @@
 #include "revolve.h"
 #include <iostream>
 #include <fstream>
+#include "linearMotion.h"
 using namespace std;
 
 enum OBJECTS {QUADS=0, CYLINDER, CONE, SPHERE, RECTANGLE, REVOLVE};
 const char* DELIM = ",";
+float angle[50];
+int motionIndex[50];
 
 void texture(string objInfo, GLuint texId[]) {
 	int texNum, texEnvi;
@@ -230,8 +233,60 @@ void getRevolve(string objInfo, bool textured) {
 	revolve(file, textured, num, slices);
 }
 
+void move(string objInfo, bool pressed) {
+	string type = objInfo.substr(0, objInfo.find(DELIM));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	
+	if (type == "ROTATE") {
+		float updateAmount = stof(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		
+		int num = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		
+		int x = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		int y = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		int z = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		angle[num] += updateAmount;
+		
+		if (angle[num] >= 360) {
+			angle[num] -= 360;
+		}
+		
+		glRotatef(angle[num], x, y, z);
+	} else if (type == "LINEAR") {
+		string file = objInfo.substr(0, objInfo.find(DELIM));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		
+		int numPoints = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		
+		int num = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		
+		int pressReq = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		
+		int repeat = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		
+		if (pressReq) {
+			if (pressed) {
+				linearMotion(file, motionIndex, numPoints, num, repeat, false);
+			} else {
+				linearMotion(file, motionIndex, numPoints, num, repeat, true);
+			}
+		} else {
+			linearMotion(file, motionIndex, numPoints, num, repeat, false);
+		}
+	}
+}
 
-void loadObjFromFile(string file, GLuint texId[]) {
+
+void loadObjFromFile(string file, GLuint texId[], bool pressed) {
 	string objInfo;
 	ifstream objFile;
 	objFile.open(file);
@@ -279,6 +334,9 @@ void loadObjFromFile(string file, GLuint texId[]) {
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "REVOLVE") {
 			objInfo.erase(0, objInfo.find(DELIM) + 1);
 			getRevolve(objInfo, textured);			
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "MOVE") {
+			objInfo.erase(0, objInfo.find(DELIM) + 1);
+			move(objInfo, pressed);			
 		} else {
 			switch (objectType) {
 				case (QUADS):
