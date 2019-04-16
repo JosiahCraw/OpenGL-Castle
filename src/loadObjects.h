@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include "linearMotion.h"
+#include "extrude.h"
 using namespace std;
 
 enum OBJECTS {QUADS=0, CYLINDER, CONE, SPHERE, RECTANGLE, REVOLVE};
@@ -285,6 +286,24 @@ void move(string objInfo, bool pressed) {
 	}
 }
 
+void extrude(string objInfo, bool textured) {
+	float width, height, depth;
+	
+	string file = objInfo.substr(0, objInfo.find(DELIM));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	
+	int num = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	
+	width = stof(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	height = stof(objInfo.substr(0, objInfo.find(DELIM)));
+	objInfo.erase(0, objInfo.find(DELIM) + 1);
+	depth = stof(objInfo.substr(0, objInfo.find(DELIM)));
+	
+	extrude(file, width, height, depth, textured, num);
+}
+
 
 void loadObjFromFile(string file, GLuint texId[], bool pressed) {
 	string objInfo;
@@ -298,6 +317,7 @@ void loadObjFromFile(string file, GLuint texId[], bool pressed) {
 		cout << objInfo;
 		cout << '\n';
 		if (objInfo.substr(0, objInfo.find(DELIM)) == "QUADS") {
+			objectType = QUADS;
 			glBegin(GL_QUADS);
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "END") {
 			glEnd();
@@ -334,6 +354,9 @@ void loadObjFromFile(string file, GLuint texId[], bool pressed) {
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "REVOLVE") {
 			objInfo.erase(0, objInfo.find(DELIM) + 1);
 			getRevolve(objInfo, textured);			
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "EXTRUDE") {
+			objInfo.erase(0, objInfo.find(DELIM) + 1);
+			extrude(objInfo, textured);			
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "MOVE") {
 			objInfo.erase(0, objInfo.find(DELIM) + 1);
 			move(objInfo, pressed);			

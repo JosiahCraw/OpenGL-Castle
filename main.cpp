@@ -3,9 +3,9 @@
 #include <cmath> 
 #include <GL/freeglut.h>
 #include <bits/stdc++.h>
-#include "loadTGA.h"
-#include "loadTextures.h"
-#include "loadObjects.h"
+#include "src/loadTGA.h"
+#include "src/loadTextures.h"
+#include "src/loadObjects.h"
 
 using namespace std;
 
@@ -79,11 +79,11 @@ void display(void) {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
 	//glClearColor (0.2f, 0.2f, 0.2f, 1.0f);
-	loadObjFromFile("cfg/skybox.cfg", texId, pressed);
-	loadObjFromFile("cfg/ship.cfg", texId, pressed);
+	loadObjFromFile("cfg/obj/skybox.cfg", texId, pressed);
+	loadObjFromFile("cfg/obj/ship.cfg", texId, pressed);
 	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-	loadObjFromFile("cfg/castle.cfg", texId, pressed);
+	loadObjFromFile("cfg/obj/castle.cfg", texId, pressed);
 	glFlush();
 }
 
@@ -109,7 +109,7 @@ void display(void) {
 
 void keyPresses(unsigned char key, int x, int y) {
 	if(key == 99) {
-		cout << "Pressed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1";
+		cout << "Pressed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
 		cout << '\n';
 		pressed = !pressed;
 	}

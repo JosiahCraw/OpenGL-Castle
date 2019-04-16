@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <GL/glut.h>
-#include "Path.h"
+#include "class/Path.h"
 
 using namespace std;
 

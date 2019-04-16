@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <GL/glut.h>
-#include "Vertices.h"
+#include "class/Vertices.h"
 #include <cmath>
 
 using namespace std;
@@ -48,32 +48,37 @@ void revolve(string file, bool textured, int num, int slices) {
 			wx[i] = vert.x[i] * cos(theta) + vert.z[i] * sin(theta);
 			wy[i] = vert.y[i];
 			wz[i] = -vert.x[i] * sin(theta) + vert.z[i] * cos(theta);		
+			
 			if (textured) {
 				s = j/(float)slices;
 				t = i / (float)vert.num;
-				if (i > 0) {
-				normal(wx[i-1], wy[i-1], wz[i-1], 
-					vert.x[i-1], vert.y[i-1], vert.z[i-1], 
-					vert.x[i], vert.y[i], vert.z[i]);
-				}
+
 				glTexCoord2f(s, t);
-				glVertex3f(vert.x[i], vert.y[i], vert.z[j]);
-				if (i > 0) {
-				normal(wx[i-1], wy[i-1], wz[i-1],
-					vert.x[i], vert.y[i], vert.z[i],
-					wx[i], wy[i], wz[i]);
-				}
-				glVertex3f(wx[i], wy[i], wz[i]);					
-			} else {
-				
-				glVertex3f(vert.x[i], vert.y[i], vert.z[i]);
-				if (i > 0) {
-				normal(wx[i-1], wy[i-1], wz[i-1],
-					vert.x[i], vert.y[i], vert.z[i],
-					wx[i], wy[i], wz[i]);
-				}
-				glVertex3f(wx[i], wy[i], wz[i]);
 			}
+								
+			if (i > 0) {
+			normal(wx[i-1], wy[i-1], wz[i-1], 
+				vert.x[i-1], vert.y[i-1], vert.z[i-1], 
+				vert.x[i], vert.y[i], vert.z[i]);
+			}
+			
+			glVertex3f(vert.x[i], vert.y[i], vert.z[i]);
+			
+			if (i > 0) {
+			normal(wx[i-1], wy[i-1], wz[i-1],
+				vert.x[i], vert.y[i], vert.z[i],
+				wx[i], wy[i], wz[i]);
+			}
+			
+			if (textured) {
+				s = j/(float)slices;
+				t = i / (float)vert.num;
+
+				glTexCoord2f(s, t);
+			}
+			
+			glVertex3f(wx[i], wy[i], wz[i]);
+			
 			vert.x[i] = wx[i];
 			vert.y[i] = wy[i];
 			vert.z[i] = wz[i];	
