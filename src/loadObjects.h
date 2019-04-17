@@ -11,6 +11,7 @@ using namespace std;
 enum OBJECTS {QUADS=0, CYLINDER, CONE, SPHERE, RECTANGLE, REVOLVE};
 const char* DELIM = ",";
 float angle[50];
+int reversing[50] = {0};
 int motionIndex[50];
 
 void texture(string objInfo, GLuint texId[]) {
@@ -24,6 +25,8 @@ void texture(string objInfo, GLuint texId[]) {
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	} else if (texEnvi == 2) {
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	} else if (texEnvi == 3) {
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	}
 }
@@ -242,7 +245,13 @@ void move(string objInfo, bool pressed) {
 		float updateAmount = stof(objInfo.substr(0, objInfo.find(DELIM)));
 		objInfo.erase(0, objInfo.find(DELIM) + 1);
 		
+		float updateLimit = stof(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		
 		int num = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+		objInfo.erase(0, objInfo.find(DELIM) + 1);
+		
+		int reverse = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 		objInfo.erase(0, objInfo.find(DELIM) + 1);
 		
 		int x = stoi(objInfo.substr(0, objInfo.find(DELIM)));
@@ -251,10 +260,20 @@ void move(string objInfo, bool pressed) {
 		objInfo.erase(0, objInfo.find(DELIM) + 1);
 		int z = stoi(objInfo.substr(0, objInfo.find(DELIM)));
 		objInfo.erase(0, objInfo.find(DELIM) + 1);
-		angle[num] += updateAmount;
+		if (reversing[num]) {
+			angle[num] -= updateAmount;
+			if (angle[num] <= 0) {
+				reversing[num] = 0;
+			}
+		} else {
+			angle[num] += updateAmount;
+		}
 		
-		if (angle[num] >= 360) {
-			angle[num] -= 360;
+		if (angle[num] >= updateLimit) {
+			if (reverse) {
+				reversing[num] = 1;
+			}
+			angle[num] -= updateLimit;
 		}
 		
 		glRotatef(angle[num], x, y, z);
@@ -309,7 +328,6 @@ void loadObjFromFile(string file, GLuint texId[], bool pressed) {
 	string objInfo;
 	ifstream objFile;
 	objFile.open(file);
-	glEnable(GL_TEXTURE_2D);
 	int objectType = 0;
 	while (1) {
 		bool textured;
@@ -324,9 +342,12 @@ void loadObjFromFile(string file, GLuint texId[], bool pressed) {
 			textured = false;
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "ENDTEX") {
 			textured = false;
+			glDisable(GL_TEXTURE_2D);
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "FILEEND") {
+			glDisable(GL_TEXTURE_2D);
 			break;
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "TEXTURE") {
+			glEnable(GL_TEXTURE_2D);
 			textured = true;
 			texture(objInfo, texId);
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "CYLINDER") {
@@ -341,7 +362,6 @@ void loadObjFromFile(string file, GLuint texId[], bool pressed) {
 			glPushMatrix();
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "POP") {
 			glPopMatrix();
-			glColor3f(0.0, 0.0, 0.0);
 			textured = false;
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "SCALE") {
 			scale(objInfo);			
@@ -360,6 +380,29 @@ void loadObjFromFile(string file, GLuint texId[], bool pressed) {
 		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "MOVE") {
 			objInfo.erase(0, objInfo.find(DELIM) + 1);
 			move(objInfo, pressed);			
+		} else if (objInfo.substr(0, objInfo.find(DELIM)) == "LIGHT") {
+			objInfo.erase(0, objInfo.find(DELIM) + 1);
+			
+			float start[] = {0,0,0,0};
+			
+			int num = stoi(objInfo.substr(0, objInfo.find(DELIM)));
+			objInfo.erase(0, objInfo.find(DELIM) + 1);
+			
+			if (num == 1) {
+				glLightfv(GL_LIGHT1, GL_POSITION, start);
+			}
+			if (num == 2) {
+				glLightfv(GL_LIGHT2, GL_POSITION, start);
+			}
+			if (num == 3) {
+				glLightfv(GL_LIGHT3, GL_POSITION, start);
+			}
+			if (num == 4) {
+				glLightfv(GL_LIGHT4, GL_POSITION, start);
+			}
+			if (num == 5) {
+				glLightfv(GL_LIGHT5, GL_POSITION, start);
+			}
 		} else {
 			switch (objectType) {
 				case (QUADS):

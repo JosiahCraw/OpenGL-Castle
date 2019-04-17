@@ -30,7 +30,7 @@ void normal(float x1, float y1, float z1,
     nx = y1*(z2-z3)+ y2*(z3-z1)+ y3*(z1-z2);
     ny = z1*(x2-x3)+ z2*(x3-x1)+ z3*(x1-x2);
     nz = x1*(y2-y3)+ x2*(y3-y1)+ x3*(y1-y2);
-    glNormal3f(-nx, -ny, -nz);
+    glNormal3f(nx, ny, nz);
 }
 
 
@@ -47,7 +47,9 @@ void revolve(string file, bool textured, int num, int slices) {
 		for (int i=0;i<vert.num;i++) {
 			wx[i] = vert.x[i] * cos(theta) + vert.z[i] * sin(theta);
 			wy[i] = vert.y[i];
-			wz[i] = -vert.x[i] * sin(theta) + vert.z[i] * cos(theta);		
+			wz[i] = -vert.x[i] * sin(theta) + vert.z[i] * cos(theta);
+		}		
+		for (int i=0;i<vert.num;i++) {
 			
 			if (textured) {
 				s = j/(float)slices;
@@ -71,13 +73,15 @@ void revolve(string file, bool textured, int num, int slices) {
 			}
 			
 			if (textured) {
-				s = j/(float)slices;
+				s = (j+1)/(float)slices;
 				t = i / (float)vert.num;
 
 				glTexCoord2f(s, t);
 			}
 			
 			glVertex3f(wx[i], wy[i], wz[i]);
+		}
+		for (int i=0;i<vert.num;i++) {
 			
 			vert.x[i] = wx[i];
 			vert.y[i] = wy[i];

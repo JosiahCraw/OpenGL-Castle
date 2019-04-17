@@ -5,10 +5,15 @@ class Path {
 	public:
 	
 	int num;
+	int numAngles;
 	
 	float x[500] = {};
 	float y[500] = {};
 	float z[500] = {};
+	
+	int angle[20][2] = {};
+	
+	int angleIndex = 0;
 	
 	Path(int numVert) {
 		num = numVert;
@@ -19,6 +24,10 @@ class Path {
 	void setY(string);
 	
 	void setZ(string);
+	
+	void setCorners(string);
+	
+	int checkCornering(int index);
 };
 
 void Path::setX(string xValues) {
@@ -44,4 +53,38 @@ void Path::setZ(string zValues) {
 		z[i] = stof(zValues.substr(0, zValues.find(delim)));
 		zValues.erase(0, zValues.find(delim) + 1);
 	}
+}
+
+void Path::setCorners(string cornerValues) {
+	numAngles = 0;
+	
+	if (cornerValues == "NULL,") {
+		return;
+	}
+	
+	angleIndex = 0;
+	
+	cout << cornerValues;
+	
+	while (1) {
+		if (cornerValues=="END,") {
+			break;
+		}
+		angle[angleIndex][0] = stoi(cornerValues.substr(0, cornerValues.find(delim)));
+		cornerValues.erase(0, cornerValues.find(delim) + 1);
+		angle[angleIndex][1] = stoi(cornerValues.substr(0, cornerValues.find(delim)));
+		cornerValues.erase(0, cornerValues.find(delim) + 1);
+		
+		angleIndex++;
+	}
+	numAngles = angleIndex;
+}
+
+int Path::checkCornering(int index) {
+	for (int i=0; i<num; i++) {
+		if (angle[i][0] >= index) {
+			return angle[i][1];
+		}
+	}
+	return 0;
 }

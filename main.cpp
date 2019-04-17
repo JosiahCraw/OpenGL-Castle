@@ -13,12 +13,15 @@ using namespace std;
 float lookAngle = 0.0;		//Camera rotation
 int NUMTEX;
 GLuint texId[100];
+GLuint texIdEmpty[2];
 float look_x, look_z=-1., eye_x, eye_z; 
+bool spacePressed=false;
+bool cannonPressed=false;
 bool pressed=false;
+float cutoff=15,expo=50;
 
 
 void initialise(void) {
-	//float black[4] = {0.0, 0.0, 0.0, 1.0};
     float white[4]  = {1.0, 1.0, 1.0, 1.0};
     float grey[4] = {0.2, 0.2, 0.2, 1.0};
     
@@ -33,6 +36,7 @@ void initialise(void) {
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
     glLightfv(GL_LIGHT0, GL_AMBIENT, grey);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
     glLightfv(GL_LIGHT0, GL_SPECULAR, white);
@@ -47,50 +51,66 @@ void initialise(void) {
 
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
-    gluPerspective(80.0, 1.78, 100.0, 5000.0);
+    gluPerspective(80.0, 1.78, 100.0, 50000.0);
 }
 
 
 void display(void) {
-	float white[4]  = {1.0, 1.0, 1.0, 1.0};
-	
-	//float cdr=3.14159265/180.0;
 	float lgt_pos[] = {1000.0f, 1000, 1000.0f, 1000.0f};
+	
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	//glMatrixMode(GL_PROJECTION);
-    //glLoadIdentity();
-	//gluPerspective(45., 1.78, 100., 5000.);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	//look_x = -100.0*sin(lookAngle*cdr);
-    //look_z = -100.0*cos(lookAngle*cdr);
-	gluLookAt(eye_x, 500, eye_z, look_x, 500, look_z,   0, 1, 0);
+	float spotdir[] = {0, 1, 0};
+	
+	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, cutoff);
+	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, expo);
+	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotdir);
+	
+	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, cutoff);
+	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, expo);
+	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, spotdir);
+	
+	glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, cutoff);
+	glLightf(GL_LIGHT3, GL_SPOT_EXPONENT, expo);
+	glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, spotdir);
+	
+	glLightf(GL_LIGHT4, GL_SPOT_CUTOFF, cutoff);
+	glLightf(GL_LIGHT4, GL_SPOT_EXPONENT, expo);
+	glLightfv(GL_LIGHT4, GL_SPOT_DIRECTION, spotdir);
+		
+	gluLookAt(eye_x, 150, eye_z, look_x, 150, look_z,   0, 1, 0);
+	
 	
 	glLightfv(GL_LIGHT0, GL_POSITION, lgt_pos);
-	glDisable(GL_LIGHTING);
-	glDisable(GL_LIGHT0);
-	
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
-    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	
-	//glClearColor (0.2f, 0.2f, 0.2f, 1.0f);
-	loadObjFromFile("cfg/obj/skybox.cfg", texId, pressed);
-	loadObjFromFile("cfg/obj/ship.cfg", texId, pressed);
-	glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    
+	loadObjFromFile("cfg/obj/ship.cfg", texIdEmpty, spacePressed);
+	loadObjFromFile("cfg/obj/robot1.cfg", texId, pressed);
+	loadObjFromFile("cfg/obj/robot2.cfg", texId, pressed);
+	loadObjFromFile("cfg/obj/cannon.cfg", texId, cannonPressed);
+	//loadObjFromFile("cfg/obj/castleTest.cfg", texId, pressed);
 	loadObjFromFile("cfg/obj/castle.cfg", texId, pressed);
-	glFlush();
+	
+	glDisable(GL_COLOR_MATERIAL);
+	
+	glDisable(GL_LIGHTING);
+	
+	loadObjFromFile("cfg/obj/skybox.cfg", texId, pressed);
+	
+	glEnable(GL_LIGHTING);
+	
+	glutSwapBuffers();
 }
 
 
  void special(int key, int x, int y) {
-    if(key == GLUT_KEY_LEFT) lookAngle -= 0.1;  //Change direction
-        else if(key == GLUT_KEY_RIGHT) lookAngle += 0.1;
+    if(key == GLUT_KEY_LEFT) lookAngle -= 0.087;  //Change direction
+        else if(key == GLUT_KEY_RIGHT) lookAngle += 0.087;
         else if(key == GLUT_KEY_DOWN)
         {  //Move backward
                 eye_x -= sin(lookAngle);
@@ -104,14 +124,13 @@ void display(void) {
 
         look_x = eye_x + 100*sin(lookAngle);
         look_z = eye_z - 100*cos(lookAngle);
-        glutPostRedisplay();
 }
 
 void keyPresses(unsigned char key, int x, int y) {
-	if(key == 99) {
-		cout << "Pressed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-		cout << '\n';
-		pressed = !pressed;
+	if(key == 115) {
+		spacePressed = !spacePressed;
+	} else if (key == 99) {
+		cannonPressed = true;
 	}
 }
 
@@ -125,7 +144,7 @@ void timer(int value)
 
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
-	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH );
+	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH );
 	glutInitWindowSize (1280, 720); 
 	glutInitWindowPosition (50, 50);
 	
