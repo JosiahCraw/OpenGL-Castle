@@ -89,7 +89,7 @@ void display(void) {
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
     
-	loadObjFromFile("cfg/obj/ship.cfg", texIdEmpty, spacePressed);
+	loadObjFromFile("cfg/obj/ship.cfg", texId, spacePressed);
 	loadObjFromFile("cfg/obj/robot1.cfg", texId, pressed);
 	loadObjFromFile("cfg/obj/robot2.cfg", texId, pressed);
 	loadObjFromFile("cfg/obj/cannon.cfg", texId, cannonPressed);
